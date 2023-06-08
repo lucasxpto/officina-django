@@ -15,8 +15,6 @@ class Pessoa(models.Model):
 
 class Cliente(models.Model):
     pessoa = models.OneToOneField(Pessoa, on_delete=models.CASCADE)
-    email = models.EmailField(unique=True)
-    senha = models.CharField(max_length=255)
 
     class Meta:
         verbose_name = 'Cliente'

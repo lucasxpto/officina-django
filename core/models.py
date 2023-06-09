@@ -61,24 +61,35 @@ class Veiculo(models.Model):
         return self.descricao
 
 
-class Item(models.Model):
+class Servico(models.Model):
     descricao = models.CharField(max_length=255)
-    valor = models.DecimalField(max_digits=10, decimal_places=2)
+    preco = models.DecimalField(max_digits=10, decimal_places=2)
 
     class Meta:
-        verbose_name = 'Item'
-        verbose_name_plural = 'Itens'
+        verbose_name = 'Serviço'
+        verbose_name_plural = 'Serviços'
 
     def __str__(self):
         return self.descricao
 
 
-class OS(models.Model):
-    data_emissao = models.DateTimeField(auto_now_add=True)
-    data_entrega = models.DateTimeField(null=True, blank=True)
+class Peca(models.Model):
+    descricao = models.CharField(max_length=255)
+    preco = models.DecimalField(max_digits=10, decimal_places=2)
+
+    class Meta:
+        verbose_name = 'Peça'
+        verbose_name_plural = 'Peças'
+
+    def __str__(self):
+        return self.descricao
+
+
+class OrdemServico(models.Model):
     veiculo = models.ForeignKey(Veiculo, on_delete=models.CASCADE)
-    equipe = models.ForeignKey(Equipe, on_delete=models.CASCADE)
-    item = models.ManyToManyField(Item, related_name='os')
+    servicos = models.ManyToManyField(Servico)
+    pecas = models.ManyToManyField(Peca, through='PecaOrdemServico')
+    total = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
 
     class Meta:
         verbose_name = 'Ordem de Serviço'
@@ -86,3 +97,16 @@ class OS(models.Model):
 
     def __str__(self):
         return self.veiculo.descricao
+
+
+class PecaOrdemServico(models.Model):
+    peca = models.ForeignKey(Peca, on_delete=models.CASCADE)
+    ordem_servico = models.ForeignKey(OrdemServico, on_delete=models.CASCADE)
+    quantidade = models.PositiveIntegerField()
+
+    class Meta:
+        verbose_name = 'Peça da Ordem de Serviço'
+        verbose_name_plural = 'Peças da Ordem de Serviço'
+
+    def __str__(self):
+        return self.peca.descricao

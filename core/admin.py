@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django import forms
+from django.contrib.admin.widgets import FilteredSelectMultiple
 
 from .models import Cliente, Equipe, Mecanico, Pessoa, Veiculo, Servico, Peca, OrdemServico, PecaOrdemServico
 
@@ -45,27 +47,48 @@ class PecaOrdemServicoInline(admin.TabularInline):
         return field
 
 
+class OSAdminForm(forms.ModelForm):
+    veiculo = forms.ModelChoiceField(queryset=Veiculo.objects.all())
+    equipe = forms.ModelChoiceField(queryset=Equipe.objects.all())
+    servicos = forms.ModelMultipleChoiceField(widget=FilteredSelectMultiple("Serviços", is_stacked=False),
+                                              queryset=Servico.objects.all())
+
+    class Meta:
+        model = OrdemServico
+        fields = ['veiculo', 'equipe', 'servicos']
+
+    def save(self, commit=True):
+        os = super().save(commit=False)
+        os.veiculo = self.cleaned_data['veiculo']
+        os.equipe = self.cleaned_data['equipe']
+
+        if commit:
+            os.save()
+            self.save_m2m()  # isto salva a relação ManyToMany com servicos
+
+        return os
+
+
 class OrdemServicoAdmin(admin.ModelAdmin):
     inlines = [PecaOrdemServicoInline, ]
-    list_display = ('veiculo',)
+    form = OSAdminForm
+    list_display = ('veiculo_e_cliente', 'equipe', 'display_total')
     filter_horizontal = ('servicos',)
 
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        field = super(OrdemServicoAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
-        if db_field.name == 'veiculo':
-            # Altera o campo de apresentação de Veículo para mostrar a placa e o nome do cliente.
-            field.choices = [(veiculo.id, f"{veiculo.descricao} - {veiculo.placa} - {veiculo.cliente.pessoa.nome}") for
-                             veiculo in
-                             Veiculo.objects.all()]
-        return field
+    def veiculo_e_cliente(self, obj):
+        return f'{obj.veiculo.descricao} - {obj.veiculo.cliente.pessoa.nome}'
 
-    def formfield_for_manytomany(self, db_field, request, **kwargs):
-        field = super(OrdemServicoAdmin, self).formfield_for_manytomany(db_field, request, **kwargs)
-        if db_field.name == 'servicos':
-            # Altera o campo de apresentação de Serviço para mostrar a descrição e o preço.
-            field.choices = [(servico.id, f"{servico.descricao} - ${servico.preco}") for servico in
-                             Servico.objects.all()]
-        return field
+    veiculo_e_cliente.short_description = 'Veículo e Cliente'
+
+    def display_total(self, obj):
+        total = 0
+        for servico in obj.servicos.all():
+            total += servico.preco
+        for peca_os in obj.pecaordemservico_set.all():
+            total += peca_os.peca.preco * peca_os.quantidade
+        return total
+
+    display_total.short_description = 'Total'
 
 
 admin.site.register(Servico)

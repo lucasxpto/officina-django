@@ -1,4 +1,5 @@
 from django.contrib import admin
+
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 
@@ -16,11 +17,29 @@ class EquipeAdmin(admin.ModelAdmin):
     list_display = ('descricao',)
     search_fields = ('descricao',)
 
+    def has_add_permission(self, request):
+        return request.user.groups.filter(name='gerentes').exists()
+
+    def has_change_permission(self, request, obj=None):
+        return request.user.groups.filter(name='gerentes').exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return request.user.groups.filter(name='gerentes').exists()
+
 
 @admin.register(Mecanico)
 class MecanicoAdmin(admin.ModelAdmin):
     list_display = ('pessoa', 'especialidade')
     search_fields = ('pessoa__nome', 'especialidade')
+
+    def has_add_permission(self, request):
+        return request.user.groups.filter(name='gerentes').exists()
+
+    def has_change_permission(self, request, obj=None):
+        return request.user.groups.filter(name='gerentes').exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return request.user.groups.filter(name='gerentes').exists()
 
 
 @admin.register(Pessoa)

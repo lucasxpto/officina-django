@@ -39,6 +39,7 @@ class Mecanico(models.Model):
 class Equipe(models.Model):
     descricao = models.CharField(max_length=255)
     mecanicos = models.ManyToManyField(Mecanico, related_name='equipes')
+    veiculos = models.ManyToManyField('Veiculo', through='VeiculoEquipe')
 
     class Meta:
         verbose_name = 'Equipe'
@@ -58,7 +59,12 @@ class Veiculo(models.Model):
         verbose_name_plural = 'Veículos'
 
     def __str__(self):
-        return self.descricao
+        return f'{self.placa} - {self.descricao} - {self.cliente}'
+
+
+class VeiculoEquipe(models.Model):
+    veiculo = models.ForeignKey('Veiculo', on_delete=models.CASCADE)
+    equipe = models.ForeignKey('Equipe', on_delete=models.CASCADE)
 
 
 class Servico(models.Model):
@@ -70,7 +76,7 @@ class Servico(models.Model):
         verbose_name_plural = 'Serviços'
 
     def __str__(self):
-        return self.descricao
+        return f'{self.descricao} - R$ {self.preco}'
 
 
 class Peca(models.Model):
@@ -87,6 +93,7 @@ class Peca(models.Model):
 
 class OrdemServico(models.Model):
     veiculo = models.ForeignKey(Veiculo, on_delete=models.CASCADE)
+    equipe = models.ForeignKey('Equipe', on_delete=models.CASCADE)
     servicos = models.ManyToManyField(Servico)
     pecas = models.ManyToManyField(Peca, through='PecaOrdemServico')
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
@@ -97,6 +104,14 @@ class OrdemServico(models.Model):
 
     def __str__(self):
         return self.veiculo.descricao
+
+    def save(self, *args, **kwargs):
+        self.total = 0
+        for servico in self.servicos.all():
+            self.total += servico.preco
+        for peca_os in self.pecaordemservico_set.all():
+            self.total += peca_os.peca.preco * peca_os.quantidade
+        super().save(*args, **kwargs)
 
 
 class PecaOrdemServico(models.Model):

@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Pessoa(models.Model):
-    nome = models.CharField(max_length=100)
+    nome = models.CharField(max_length=255)
     endereco = models.CharField(max_length=255)
 
     class Meta:
@@ -24,22 +24,9 @@ class Cliente(models.Model):
         return self.pessoa.nome
 
 
-class Veiculo(models.Model):
-    placa = models.CharField(max_length=10, unique=True)
-    descricao = models.CharField(max_length=255)
-    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
-
-    class Meta:
-        verbose_name = 'Veiculo'
-        verbose_name_plural = 'Veiculos'
-
-    def __str__(self):
-        return self.descricao
-
-
 class Mecanico(models.Model):
     pessoa = models.OneToOneField(Pessoa, on_delete=models.CASCADE)
-    especialidade = models.CharField(max_length=100)
+    especialidade = models.CharField(max_length=255)
 
     class Meta:
         verbose_name = 'Mecânico'
@@ -51,7 +38,7 @@ class Mecanico(models.Model):
 
 class Equipe(models.Model):
     descricao = models.CharField(max_length=255)
-    mecanicos = models.ManyToManyField(Mecanico)
+    mecanicos = models.ManyToManyField(Mecanico, related_name='equipes')
 
     class Meta:
         verbose_name = 'Equipe'
@@ -61,9 +48,34 @@ class Equipe(models.Model):
         return self.descricao
 
 
+class Veiculo(models.Model):
+    placa = models.CharField(max_length=7)
+    descricao = models.CharField(max_length=255)
+    cliente = models.OneToOneField(Cliente, on_delete=models.CASCADE, related_name='veiculo')
+
+    class Meta:
+        verbose_name = 'Veículo'
+        verbose_name_plural = 'Veículos'
+
+    def __str__(self):
+        return self.descricao
+
+
+class Servico(models.Model):
+    descricao = models.CharField(max_length=255)
+    preco = models.DecimalField(max_digits=10, decimal_places=2)
+
+    class Meta:
+        verbose_name = 'Serviço'
+        verbose_name_plural = 'Serviços'
+
+    def __str__(self):
+        return self.descricao
+
+
 class Peca(models.Model):
     descricao = models.CharField(max_length=255)
-    valor = models.DecimalField(max_digits=10, decimal_places=2)
+    preco = models.DecimalField(max_digits=10, decimal_places=2)
 
     class Meta:
         verbose_name = 'Peça'
@@ -73,20 +85,11 @@ class Peca(models.Model):
         return self.descricao
 
 
-class Servico(models.Model):
-    descricao = models.CharField(max_length=255)
-    peca = models.ForeignKey(Peca, on_delete=models.CASCADE)
-
-    class Meta:
-        verbose_name = 'Serviço'
-        verbose_name_plural = 'Serviços'
-
-
-class OS(models.Model):
-    data_emissao = models.DateTimeField(auto_now_add=True)
-    data_entrega = models.DateTimeField(null=True, blank=True)
+class OrdemServico(models.Model):
     veiculo = models.ForeignKey(Veiculo, on_delete=models.CASCADE)
-    equipe = models.ForeignKey(Equipe, on_delete=models.CASCADE)
+    servicos = models.ManyToManyField(Servico)
+    pecas = models.ManyToManyField(Peca, through='PecaOrdemServico')
+    total = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
 
     class Meta:
         verbose_name = 'Ordem de Serviço'
@@ -96,15 +99,14 @@ class OS(models.Model):
         return self.veiculo.descricao
 
 
-class Item(models.Model):
-    descricao = models.CharField(max_length=255)
-    valor = models.DecimalField(max_digits=10, decimal_places=2)
-    servico = models.ForeignKey(Servico, on_delete=models.CASCADE)
-    os = models.ForeignKey(OS, on_delete=models.CASCADE)
+class PecaOrdemServico(models.Model):
+    peca = models.ForeignKey(Peca, on_delete=models.CASCADE)
+    ordem_servico = models.ForeignKey(OrdemServico, on_delete=models.CASCADE)
+    quantidade = models.PositiveIntegerField()
 
     class Meta:
-        verbose_name = 'Item'
-        verbose_name_plural = 'Itens'
+        verbose_name = 'Peça da Ordem de Serviço'
+        verbose_name_plural = 'Peças da Ordem de Serviço'
 
     def __str__(self):
-        return self.descricao
+        return self.peca.descricao

@@ -22,6 +22,6 @@
     @apply block mb-2 text-sm font-medium text-gray-900 mt-6
 }
 
-#id_nome, #id_email, #id_assunto {
-    @apply lg:w-1/3
+.formulario-contato p input {
+    @apply md:w-1/2
 }

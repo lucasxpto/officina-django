@@ -1,0 +1,23 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Quem somos{% endblock %}
+
+{% block content %}
+
+<div class="container mx-auto max-w-screen-xl p-4">
+
+    <div class="text-center">
+        <h1 class="text-4xl my-6">{{ quem_somos.titulo }}</h1>
+    </div>
+
+    <article class="p-4 article">
+
+        {{ quem_somos.corpo|safe }}
+    </article>
+
+    <div class="p-4 copy">
+        {{ quem_somos.data_cadastro }}
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,50 @@
+{% load static %}
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}{% endblock %} | AutoControle</title>
+
+    <link rel="stylesheet" href="{% static 'main.min.css' %}">
+
+</head>
+<body>
+<div class="flex flex-col min-h-screen">
+
+    {% include "core/includes/navbar.html" %}
+
+    <main class="flex-grow">
+
+        <div class="container mx-auto max-w-4xl">
+            {% if messages %}
+
+                {% for message in messages %}
+
+                {% if message.tags == 'error' %}
+                    <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50" role="alert">
+                        <span class="font-medium">Erro!</span> {{ message }}
+                    </div>
+                {% endif %}
+
+                {% if message.tags == 'success' %}
+                    <div class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50" role="alert">
+                        <span class="font-medium">Alerta!</span> {{ message }}
+                    </div>
+                {% endif %}
+
+                {% endfor %}
+
+            {% endif %}
+        </div>
+
+        {% block content %}{% endblock %}
+
+    </main>
+
+    {% include "core/includes/footer.html" %}
+
+</div>
+</body>
+</html>

@@ -24,18 +24,28 @@
         <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-cta">
             <ul class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white">
                 <li>
-                    <a href="#"
-                       class="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0"
+                    {% url 'index' as url %}
+                    <a href="{{ url }}"
+                       class="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent {%if request.path == url %}md:text-blue-700{% else %}md:text-gray-900{% endif %} md:p-0"
                        aria-current="page">Início</a>
                 </li>
                 <li>
-                    <a href="#"
-                       class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0">Quem
+                    {% url 'veiculos:list' as url %}
+                    <a href="{{ url }}"
+                       class="block py-2 pl-3 pr-4 text-gray-900 {%if request.path == url %}md:text-blue-700{% endif %} rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0">
+                        Veículos
+                    </a>
+                </li>
+                <li>
+                    {% url 'quem_somos' as url %}
+                    <a href="{{ url }}"
+                       class="block py-2 pl-3 pr-4 text-gray-900 {%if request.path == url %}md:text-blue-700{% endif %} rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0">Quem
                         somos </a>
                 </li>
                 <li>
-                    <a href="#"
-                       class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0">Contato</a>
+                    {% url 'contato' as url %}
+                    <a href="{{ url }}"
+                       class="block py-2 pl-3 pr-4 text-gray-900 {%if request.path == url %}md:text-blue-700{% endif %} rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0">Contato</a>
                 </li>
             </ul>
         </div>

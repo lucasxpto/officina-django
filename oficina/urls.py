@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views
 
-from core.views import index, quem_somos, contato, termos, registrar
+from core.views import index, quem_somos, contato, termos, registrar, login_view
 
 urlpatterns = [
     path('', index, name='index'),
@@ -13,7 +13,7 @@ urlpatterns = [
     path('contato/', contato, name='contato'),
     path('veiculos/', include('veiculo.urls')),
     path('registrar/', registrar, name='registrar'),
-    path('login/', views.LoginView.as_view(template_name='core/login.html'), name='login'),
+    path('login/', login_view, name='login'),
     path('logout/', views.LogoutView.as_view(), name='logout'),
     path('admin/', admin.site.urls),
 

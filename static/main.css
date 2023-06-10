@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.article {
+    @apply prose lg:prose-lg;
+}
+
+.copy {
+    @apply prose prose-sm
+}
+
+.form-control {
+    @apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
+}
+
+.formulario-contato p textarea {
+    @apply resize-none h-40
+}
+
+.formulario-contato p label {
+    @apply block mb-2 text-sm font-medium text-gray-900 mt-6
+}
+
+#id_nome, #id_email, #id_assunto {
+    @apply lg:w-1/3
+}

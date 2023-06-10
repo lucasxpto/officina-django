@@ -93,13 +93,8 @@ class OSAdminForm(forms.ModelForm):
 class OrdemServicoAdmin(admin.ModelAdmin):
     inlines = [PecaOrdemServicoInline, ]
     form = OSAdminForm
-    list_display = ('veiculo_e_cliente', 'equipe', 'display_total')
+    list_display = ('veiculo', 'equipe', 'display_total')
     filter_horizontal = ('servicos',)
-
-    def veiculo_e_cliente(self, obj):
-        return f'{obj.veiculo.descricao} - {obj.veiculo.cliente.pessoa.nome}'
-
-    veiculo_e_cliente.short_description = 'Veículo e Cliente'
 
     def display_total(self, obj):
         total = 0
@@ -108,7 +103,6 @@ class OrdemServicoAdmin(admin.ModelAdmin):
         for peca_os in obj.pecaordemservico_set.all():
             total += peca_os.peca.preco * peca_os.quantidade
         return total
-
     display_total.short_description = 'Total'
 
 

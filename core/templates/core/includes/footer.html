@@ -1,8 +1,8 @@
-<footer class="bg-white rounded-lg shadow m-4">
+<footer class="bg-white rounded-lg shadow m-4 text-center">
     <div class="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
       <span class="text-sm text-gray-500 sm:text-center">© 2023 <a href="https://flowbite.com/" class="hover:underline">AutoControle™</a>. Alguns direitos reservados.
     </span>
-        <ul class="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-500 sm:mt-0">
+        <ul class="flex flex-wrap items-center justify-center mt-3 text-sm font-medium text-gray-500 sm:mt-0">
             <li>
                 <a href="{% url 'quem_somos' %}" class="mr-4 hover:underline md:mr-6 ">Quem Somos</a>
             </li>
@@ -13,68 +13,4 @@
     </div>
 </footer>
 
-<script>
-    const modal = document.getElementById('modalDelete');
-    const confirmDeleteButton = document.getElementById('confirm-delete');
-    const cancelDeleteButton = document.getElementById('cancel-delete');
-    const deleteButtons = Array.from(document.getElementsByClassName('deleteButton'));
-
-    const veiculoIdToBeDeleted = () => localStorage.getItem('toDelete');
-
-    const showModal = (veiculoId) => {
-        localStorage.setItem('toDelete', veiculoId);
-        modal.classList.remove('hidden');
-    }
-
-    const closeModal = () => modal.classList.add('hidden');
-
-    const deleteVeiculo = () => {
-        const veiculoId = veiculoIdToBeDeleted();
-
-        fetch(`/veiculos/${veiculoId}/excluir/`, {
-            method: 'POST',
-            headers: {"X-CSRFToken": csrftoken},
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Erro ao excluir veículo.');
-                }
-                window.location.reload();
-            })
-            .catch(error => {
-                console.error('Erro:', error);
-            });
-
-        closeModal();
-    }
-
-    deleteButtons.forEach(button => {
-        const veiculoId = button.getAttribute('data-id');
-        button.addEventListener('click', (e) => {
-            e.preventDefault();
-            showModal(veiculoId);
-        });
-    });
-
-    cancelDeleteButton.addEventListener('click', closeModal);
-    confirmDeleteButton.addEventListener('click', deleteVeiculo);
-
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-
-    const csrftoken = getCookie('csrftoken');
-
-</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>

@@ -9,19 +9,19 @@
             {% if request.user.is_authenticated %}
 
             <a href="/admin"
-               class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5">
+               class="hidden md:block text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5">
                 Dashboard
             </a>
 
             <a href="{% url 'logout' %}"
-                    class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5">
+               class="hidden md:block text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5">
                 Sair
             </a>
 
             {% else %}
 
             <a href="{% url 'login' %}"
-                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none">
+               class="hidden md:block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none">
                 Acessar Conta
             </a>
 
@@ -39,12 +39,12 @@
                 </svg>
             </button>
         </div>
-        <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-cta">
+        <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-cta"> <!-- hidden -->
             <ul class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white">
                 <li>
                     {% url 'index' as url %}
                     <a href="{{ url }}"
-                       class="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent {%if request.path == url %}md:text-blue-700{% else %}md:text-gray-900{% endif %} md:p-0"
+                       class="block py-2 pl-3 pr-4 text-gray-900 rounded md:bg-transparent {%if request.path == url %}md:text-blue-700{% else %}md:text-gray-900{% endif %} md:p-0"
                        aria-current="page">Início</a>
                 </li>
                 <li>
@@ -65,6 +65,32 @@
                     <a href="{{ url }}"
                        class="block py-2 pl-3 pr-4 text-gray-900 {%if request.path == url %}md:text-blue-700{% endif %} rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0">Contato</a>
                 </li>
+
+                {% if request.user.is_authenticated %}
+                <li class="md:hidden">
+                    <a href="/admin"
+                       class="block py-2 pl-3 pr-4 text-gray-900 rounded md:bg-transparent md:p-0">
+                        Dashboard
+                    </a>
+                </li>
+                <li class="md:hidden">
+                    <a href="{% url 'logout' %}"
+                       class="block py-2 pl-3 pr-4 text-gray-900 rounded md:bg-transparent md:p-0">
+                        Sair
+                    </a>
+                </li>
+
+                {% else %}
+                <li class="md:hidden">
+
+                    <a href="{% url 'login' %}"
+                       class="block py-2 pl-3 pr-4 text-gray-900 rounded md:bg-transparent md:p-0">
+                        Acessar Conta
+                    </a>
+                </li>
+
+                {% endif %}
+
             </ul>
         </div>
     </div>

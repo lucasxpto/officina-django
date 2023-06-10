@@ -1,3 +1,5 @@
+import time
+
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
@@ -15,7 +17,7 @@ class VeiculoListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         queryset = super(VeiculoListView, self).get_queryset()
-        return queryset.all()
+        return queryset.order_by('placa')
 
 
 class VeiculoCreateView(LoginRequiredMixin, CreateView):
@@ -56,6 +58,7 @@ class VeiculoDeleteView(LoginRequiredMixin, DeleteView):
     model = Veiculo
     success_url = reverse_lazy('veiculos:listar')
 
-    def delete(self, request, *args, **kwargs):
+    def get_success_url(self):
         messages.success(self.request, "Veículo excluído com sucesso.")
-        return super().delete(request, *args, **kwargs)
+        return super().get_success_url()
+

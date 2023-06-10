@@ -1,9 +1,11 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
+from django.shortcuts import redirect
+from django_summernote.admin import SummernoteModelAdmin
 
-from .models import Cliente, Equipe, Mecanico, Pessoa, Veiculo, Servico, Peca, OrdemServico, PecaOrdemServico
+from .models import Cliente, Equipe, Mecanico, Pessoa, Veiculo, Servico, Peca, OrdemServico, PecaOrdemServico, QuemSomos
 
 
 @admin.register(Cliente)
@@ -110,6 +112,18 @@ class OrdemServicoAdmin(admin.ModelAdmin):
     display_total.short_description = 'Total'
 
 
+class QuemSomosAdmin(SummernoteModelAdmin):
+    summernote_fields = ('corpo',)
+
+    def add_view(self, request, form_url='', extra_context=None):
+        if QuemSomos.objects.exists():
+            messages.set_level(request, messages.ERROR)
+            messages.error(request, 'Já existe um objeto QuemSomos. Não é possível criar outro.')
+            return redirect("..")
+        return super().add_view(request, form_url="", extra_context=extra_context)
+
+
 admin.site.register(Servico)
 admin.site.register(Peca)
 admin.site.register(OrdemServico, OrdemServicoAdmin)
+admin.site.register(QuemSomos, QuemSomosAdmin)

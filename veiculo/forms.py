@@ -3,7 +3,7 @@ from django import forms
 from core.models import Veiculo
 
 
-class VeiculoForm(forms.ModelForm):
+class AddVeiculoForm(forms.ModelForm):
     class Meta:
         model = Veiculo
-        fields = ['placa', 'descricao']
+        fields = ['placa', 'descricao', 'cliente']

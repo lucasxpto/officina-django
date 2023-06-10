@@ -105,7 +105,6 @@ class OrdemServicoAdmin(admin.ModelAdmin):
         return total
     display_total.short_description = 'Total'
 
-
 class QuemSomosAdmin(SummernoteModelAdmin):
     summernote_fields = ('corpo',)
 

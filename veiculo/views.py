@@ -11,6 +11,7 @@ from veiculo.forms import AddVeiculoForm
 class VeiculoListView(LoginRequiredMixin, ListView):
     model = Veiculo
     template_name = 'veiculo/veiculo_list.html'
+    paginate_by = 5
 
     def get_queryset(self):
         queryset = super(VeiculoListView, self).get_queryset()

@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 
 
@@ -52,7 +53,8 @@ class Equipe(models.Model):
 class Veiculo(models.Model):
     placa = models.CharField(max_length=7)
     descricao = models.CharField(max_length=255)
-    cliente = models.OneToOneField(Cliente, on_delete=models.CASCADE, related_name='veiculo')
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name='veiculos')
+    equipes = models.ManyToManyField(Equipe, through='VeiculoEquipe')
 
     class Meta:
         verbose_name = 'Veículo'
@@ -125,3 +127,16 @@ class PecaOrdemServico(models.Model):
 
     def __str__(self):
         return self.peca.descricao
+
+
+class QuemSomos(models.Model):
+    titulo = models.CharField(max_length=200)
+    corpo = models.TextField()
+    data_cadastro = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Quem Somos'
+        verbose_name_plural = 'Quem Somos'
+
+    def __str__(self):
+        return self.titulo

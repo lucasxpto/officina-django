@@ -107,14 +107,6 @@ class OrdemServico(models.Model):
     def __str__(self):
         return self.veiculo.descricao
 
-    def save(self, *args, **kwargs):
-        self.total = 0
-        for servico in self.servicos.all():
-            self.total += servico.preco
-        for peca_os in self.pecaordemservico_set.all():
-            self.total += peca_os.peca.preco * peca_os.quantidade
-        super().save(*args, **kwargs)
-
 
 class PecaOrdemServico(models.Model):
     peca = models.ForeignKey(Peca, on_delete=models.CASCADE)
